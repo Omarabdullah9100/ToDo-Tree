@@ -6,29 +6,149 @@
     box-sizing: border-box;
 }
 
+:root {
+    /* Dark mode (default) variables */
+    --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+    --text-color: white;
+    --card-bg: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.2);
+    --input-text: white;
+    --button-bg: #22d3ee;
+    --button-hover: #0ea5e9;
+    --list-item-bg: rgba(255, 255, 255, 0.1);
+    --list-checked-bg: rgba(0, 255, 0, 0.1);
+    --category-bg: rgba(255, 255, 255, 0.3);
+    --invert-icons: 1;
+    --link-color: #22d3ee;
+}
+
+body.light-mode {
+    /* Light mode variables */
+    --bg-gradient: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    --text-color: #1e293b;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --input-bg: rgba(0, 0, 0, 0.05);
+    --input-text: #1e293b;
+    --button-bg: #0ea5e9;
+    --button-hover: #0284c7;
+    --list-item-bg: rgba(0, 0, 0, 0.05);
+    --list-checked-bg: rgba(0, 200, 0, 0.1);
+    --category-bg: rgba(0, 0, 0, 0.1);
+    --invert-icons: 0;
+    --link-color: #0369a1;
+}
+
 body {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: white;
+    background: var(--bg-gradient);
+    color: var(--text-color);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Theme Toggle Switch */
+.theme-switch-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+}
+
+.theme-switch {
+    display: inline-block;
+    position: relative;
+    width: 60px;
+    height: 34px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--button-bg);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--button-bg);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.slider-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    transition: .4s;
+}
+
+.sun-icon {
+    left: 8px;
+    opacity: 0;
+}
+
+.moon-icon {
+    right: 8px;
+    opacity: 1;
+}
+
+input:checked + .slider .sun-icon {
+    opacity: 1;
+}
+
+input:checked + .slider .moon-icon {
+    opacity: 0;
 }
 
 /* Authentication Forms */
 #sign-in-container, #sign-up-container {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg);
     padding: 20px;
     border-radius: 8px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Safari and iOS fallback */
-    color: #f5f5f5;
+    color: var(--text-color);
     width: 90%;
     max-width: 350px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin: 0 auto;
+    transition: all 0.3s ease;
 }
 
 #sign-in-container h2, #sign-up-container h2 {
@@ -42,26 +162,33 @@ input, button {
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
-    background: transparent;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid rgba(125, 125, 125, 0.3);
     outline: none;
+    transition: all 0.3s ease;
+}
+
+input::placeholder {
+    color: var(--input-text);
+    opacity: 0.6;
 }
 
 button {
-    background-color: #22d3ee;
+    background-color: var(--button-bg);
     color: white;
     cursor: pointer;
     transition: background 0.3s;
     border: none;
+    font-weight: 500;
 }
 
 button:hover {
-    background-color: #0ea5e9;
+    background-color: var(--button-hover);
 }
 
 p a {
-    color: #22d3ee;
+    color: var(--link-color);
     text-decoration: none;
 }
 
@@ -74,6 +201,8 @@ p a:hover {
     width: 100%;
     max-width: 600px;
     margin: auto;
+    transition: all 0.3s ease;
+    padding: 0 15px;
 }
 
 #todo-container {
@@ -81,14 +210,16 @@ p a:hover {
     max-width: 600px;
     margin: auto;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg);
     border-radius: 10px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Safari and iOS fallback */
-    color: white;
+    color: var(--text-color);
     text-align: center;
     overflow-y: auto;
     max-height: 90vh;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 .todoapp {
@@ -107,6 +238,8 @@ h2 img {
     width: 24px;
     height: 24px;
     margin-left: 10px;
+    filter: invert(var(--invert-icons));
+    transition: filter 0.3s ease;
 }
 
 .user-info {
@@ -114,6 +247,8 @@ h2 img {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 #user-email {
@@ -126,53 +261,71 @@ h2 img {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 30px;
-    padding: 10px;
+    background: var(--input-bg);
+    border-radius: 10px;
+    padding: 15px;
     margin-bottom: 20px;
     width: 100%;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+    flex-wrap: wrap;
 }
 
 input[type="text"], 
 select, 
 input[type="datetime-local"] {
     flex: 1;
-    padding: 10px;
-    border-radius: 5px;
-    background: transparent;
-    color: #fff;
-    border: none;
+    min-width: 120px;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid rgba(125, 125, 125, 0.3);
     outline: none;
     margin: 0;
+    transition: all 0.3s ease;
+    font-size: 16px; /* Increase font size for mobile readability */
+}
+
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+    padding-right: 30px;
 }
 
 input[type="datetime-local"] {
-    color: white;
-    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-color);
+    background-color: var(--card-bg);
 }
 
 /* Fix for datetime input color in some browsers */
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
+    filter: invert(var(--invert-icons));
+    width: 20px; /* Larger tap target */
+    height: 20px; /* Larger tap target */
 }
 
 #add-task-btn {
-    background: #22d3ee;
+    background: var(--button-bg);
     color: white;
     border: none;
-    border-radius: 30px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s;
-    padding: 8px 20px;
+    padding: 12px 20px;
     width: auto;
-    min-width: 80px;
+    min-width: 100px;
     flex-shrink: 0;
+    font-weight: bold;
+    font-size: 16px; /* Increase font size for mobile readability */
 }
 
 #add-task-btn:hover {
-    background: #0ea5e9;
+    background: var(--button-hover);
 }
 
 ul {
@@ -184,8 +337,8 @@ li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    margin: 10px 0;
+    background: var(--list-item-bg);
+    margin: 12px 0;
     padding: 15px;
     border-radius: 10px;
     word-wrap: break-word;
@@ -195,11 +348,14 @@ li {
     position: relative;
     cursor: pointer;
     transition: background 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 li.checked {
     text-decoration: line-through;
-    background: rgba(0, 255, 0, 0.1);
+    background: var(--list-checked-bg);
 }
 
 .task-content {
@@ -209,11 +365,16 @@ li.checked {
     flex: 1;
     text-align: left;
     gap: 5px;
+    min-width: 0; /* Allow flexible width in flex container */
 }
 
 .task-name {
     font-size: 16px;
     font-weight: 500;
+    width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .category {
@@ -221,7 +382,7 @@ li.checked {
     padding: 3px 7px;
     border-radius: 5px;
     font-weight: bold;
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--category-bg);
 }
 
 .reminder {
@@ -242,6 +403,8 @@ li.checked {
     border: none;
     width: auto;
     white-space: nowrap;
+    min-height: 44px; /* Minimum touch target size */
+    font-size: 15px; /* Increased for better readability */
 }
 
 .complete-btn {
@@ -272,13 +435,74 @@ li.checked {
     transition: background 0.3s;
     width: auto;
     margin: 0;
+    min-height: 44px; /* Minimum touch target size */
 }
 
 #logout-button:hover {
     background: #e53935;
 }
 
-/* Media Queries */
+/* Filter and export controls */
+.controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#filter-select {
+    flex: 1;
+    min-width: 120px;
+}
+
+#export-btn {
+    background: var(--button-bg);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    min-height: 44px;
+}
+
+/* Empty list message */
+.empty-list {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+/* Media Queries for better mobile experience */
+/* Small phones */
+@media (max-width: 360px) {
+    body {
+        padding: 10px 0;
+    }
+    
+    #todo-container, 
+    #sign-in-container, 
+    #sign-up-container {
+        width: 95%;
+        padding: 15px 10px;
+    }
+
+    .theme-switch-container {
+        top: 10px;
+        right: 10px;
+    }
+    
+    input[type="text"], 
+    select, 
+    input[type="datetime-local"] {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+/* General mobile devices */
 @media (max-width: 600px) {
     .container {
         max-width: 100%;
@@ -289,6 +513,7 @@ li.checked {
         width: 95%;
         padding: 15px;
         max-height: 85vh;
+        margin-top: 40px; /* Add space for the theme toggle */
     }
     
     .row {
@@ -305,7 +530,9 @@ li.checked {
     }
     
     .task-actions {
-        flex-direction: column;
+        flex-direction: row; /* Keep buttons side by side on mobile */
+        justify-content: space-between;
+        width: 100%;
     }
     
     li {
@@ -314,13 +541,78 @@ li.checked {
         gap: 10px;
     }
     
-    .task-actions {
+    .task-content {
         width: 100%;
     }
     
     .user-info {
         flex-direction: column;
         gap: 10px;
+        text-align: center;
+    }
+    
+    .todoapp h2 {
+        font-size: 20px;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    h2 img {
+        margin-left: 0;
+    }
+    
+    .complete-btn, 
+    .delete-btn {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+    }
+    
+    /* Improve form layout on mobile */
+    #sign-in-container, 
+    #sign-up-container {
+        padding: 15px;
+        margin-top: 40px; /* Add space for the theme toggle */
+    }
+    
+    /* Make buttons larger for better touch targets */
+    button {
+        padding: 12px 15px;
+        min-height: 44px;
+    }
+}
+
+/* Tablets and medium screens */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .container {
+        max-width: 90%;
+    }
+    
+    #todo-container {
+        max-width: 90%;
+    }
+    
+    .row {
+        flex-wrap: wrap;
+    }
+    
+    input[type="text"] {
+        min-width: 180px;
+    }
+}
+
+/* Support for iOS and Safari */
+@supports (-webkit-touch-callout: none) {
+    /* iOS specific styles */
+    input, 
+    select, 
+    button {
+        -webkit-appearance: none;
+        border-radius: 8px;
+    }
+    
+    input[type="datetime-local"] {
+        min-height: 44px;
     }
 }
 
@@ -342,6 +634,34 @@ li.checked {
     #sign-up-container, 
     #todo-container,
     .row {
-        background: rgba(30, 41, 59, 0.9);
+        background: var(--card-bg);
+    }
+}
+
+/* Adjustments for devices with notches */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* Add pull-to-refresh hint for mobile */
+@keyframes pullDown {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+    100% { transform: translateY(0); }
+}
+
+/* Prevent zooming on inputs on iOS */
+@media screen and (max-width: 600px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 16px;
     }
 }
