@@ -9,34 +9,26 @@
 body {
     background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
-    display: flex; /* Add flexbox for centering */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    height: 100vh; /* Full viewport height */
-    overflow: hidden;
-}
-
-/* Authentication Forms (Sign In / Sign Up) */
-#auth-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%; /* Ensure full height for centering */
-    width: 100%;
-    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
 }
 
+/* Authentication Forms */
 #sign-in-container, #sign-up-container {
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 8px;
-    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* Safari and iOS fallback */
     color: #f5f5f5;
     width: 90%;
     max-width: 350px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
 }
 
 #sign-in-container h2, #sign-up-container h2 {
@@ -52,7 +44,7 @@ input, button {
     border-radius: 5px;
     background: transparent;
     color: white;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     outline: none;
 }
 
@@ -61,15 +53,15 @@ button {
     color: white;
     cursor: pointer;
     transition: background 0.3s;
+    border: none;
 }
 
 button:hover {
     background-color: #0ea5e9;
 }
 
-/* Styling for Sign-In and Sign-Up Links */
 p a {
-    color: #007BFF;
+    color: #22d3ee;
     text-decoration: none;
 }
 
@@ -77,33 +69,61 @@ p a:hover {
     text-decoration: underline;
 }
 
-/* Main To-Do List Styling (Visible After Login) */
-#todo-container {
-    display: none;
+/* To-Do List Styling */
+.container {
     width: 100%;
-    max-width: 600px;  /* Set max-width for the container */
+    max-width: 600px;
+    margin: auto;
+}
+
+#todo-container {
+    width: 100%;
+    max-width: 600px;
     margin: auto;
     padding: 20px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* Safari and iOS fallback */
     color: white;
     text-align: center;
-    overflow-y: auto; /* Allow scrolling if content overflows */
+    overflow-y: auto;
+    max-height: 90vh;
 }
 
-/* Header of the To-Do List */
+.todoapp {
+    width: 100%;
+}
+
+.todoapp h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 h2 img {
-    width: 20px; /* Adjusted width for the icon */
-    height: 20px; /* Adjusted height for the icon */
+    width: 24px;
+    height: 24px;
     margin-left: 10px;
 }
 
-/* Row that holds the input box, category selector, and add button */
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#user-email {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
 .row {
     display: flex;
-    justify-content: space-between; /* Ensure equal spacing between items */
+    justify-content: space-between;
     align-items: center;
     gap: 10px;
     background: rgba(255, 255, 255, 0.2);
@@ -111,53 +131,62 @@ h2 img {
     padding: 10px;
     margin-bottom: 20px;
     width: 100%;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
-/* Adjustments for input, select, and reminder select */
-input[type="text"], select, #reminder-select {
-    flex: 1; /* Allow them to grow and take available space */
+input[type="text"], 
+select, 
+input[type="datetime-local"] {
+    flex: 1;
     padding: 10px;
     border-radius: 5px;
     background: transparent;
     color: #fff;
     border: none;
     outline: none;
-    margin: 5px 0;
-    min-width: 80px;  /* Ensure minimum width for proper visibility */
+    margin: 0;
 }
 
-/* Ensure the Add button is smaller by reducing its padding */
-button.add-btn {
+input[type="datetime-local"] {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Fix for datetime input color in some browsers */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+#add-task-btn {
     background: #22d3ee;
     color: white;
     border: none;
     border-radius: 30px;
     cursor: pointer;
     transition: background 0.3s;
-    padding: 10px 15px;  /* Reduced padding on left and right */
-    width: auto;  /* Let button shrink to content */
-    max-width: 120px;  /* Make the add button smaller */
-    flex-shrink: 0; /* Prevent it from shrinking */
+    padding: 8px 20px;
+    width: auto;
+    min-width: 80px;
+    flex-shrink: 0;
 }
 
-button.add-btn:hover {
+#add-task-btn:hover {
     background: #0ea5e9;
 }
 
-/* Task List Styling */
 ul {
     list-style: none;
     padding: 0;
-    margin-bottom: 20px;  /* Added margin for spacing */
 }
 
 li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 0, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     margin: 10px 0;
-    padding: 15px 45px 15px 50px;
+    padding: 15px;
     border-radius: 10px;
     word-wrap: break-word;
     white-space: normal;
@@ -170,118 +199,149 @@ li {
 
 li.checked {
     text-decoration: line-through;
-    background: rgba(0, 255, 0, 0.1); /* Light green background when checked */
+    background: rgba(0, 255, 0, 0.1);
+}
+
+.task-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+    text-align: left;
+    gap: 5px;
+}
+
+.task-name {
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .category {
-    font-size: 0.9em;
+    font-size: 0.8em;
     padding: 3px 7px;
     border-radius: 5px;
     font-weight: bold;
     background: rgba(255, 255, 255, 0.3);
 }
 
-li:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* Button Styling for Delete and Complete */
-button.delete-btn, button.complete-btn {
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #ff3d00;
-    color: white;
-    border: none;
-}
-
-button.complete-btn {
-    background-color: #4caf50;
-}
-
-button.delete-btn:hover, button.complete-btn:hover {
+.reminder {
+    font-size: 0.8em;
     opacity: 0.8;
 }
 
-/* Logout Button */
+.task-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.complete-btn, 
+.delete-btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    width: auto;
+    white-space: nowrap;
+}
+
+.complete-btn {
+    background-color: #4caf50;
+    color: white;
+}
+
+.delete-btn {
+    background-color: #ff3d00;
+    color: white;
+}
+
+.complete-btn:hover {
+    background-color: #388e3c;
+}
+
+.delete-btn:hover {
+    opacity: 0.8;
+}
+
 #logout-button {
-    padding: 10px;
+    padding: 8px 15px;
     background: #f44336;
     color: white;
     border: none;
-    border-radius: 30px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
-    margin-bottom: 20px;
+    width: auto;
+    margin: 0;
 }
 
 #logout-button:hover {
     background: #e53935;
 }
 
-/* Floating Task Cards */
-.floating-task-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
-
-.floating-task {
-    position: absolute;
-    width: 120px;
-    height: 80px;
-    background: rgba(255, 255, 0, 0.1);
-    -webkit-backdrop-filter: blur(5px); /* Standard property */
-    backdrop-filter: blur(5px); /* Safari and iOS fallback */
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
-    animation: float 10s infinite alternate ease-in-out;
-    opacity: 0.5; /* Consistent opacity for all floating cards */
-    transition: all 0.3s ease-in-out; /* Smooth transitions */
-}
-
-/* Floating Animations */
-@keyframes float {
-    0% {
-        transform: translateY(0px) rotate(0deg);
-    }
-    100% {
-        transform: translateY(-40px) rotate(5deg);
-    }
-}
-
-/* Responsive Layout for Mobile Devices */
+/* Media Queries */
 @media (max-width: 600px) {
     .container {
         max-width: 100%;
-    }
-
-    .todoapp {
-        width: 90%;
         padding: 10px;
     }
-
-    input, select, button {
-        width: 100%;
+    
+    #todo-container {
+        width: 95%;
+        padding: 15px;
+        max-height: 85vh;
     }
-
+    
     .row {
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    input[type="text"], 
+    select, 
+    input[type="datetime-local"],
+    #add-task-btn {
+        width: 100%;
+    }
+    
+    .task-actions {
+        flex-direction: column;
+    }
+    
+    li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .task-actions {
+        width: 100%;
+    }
+    
+    .user-info {
+        flex-direction: column;
+        gap: 10px;
     }
 }
 
-/* Other styles remain the same */
+/* Additional animations for visual appeal */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-/* Style for the reminder datetime input */
-#reminder-select {
-    padding: 10px;
-    border-radius: 5px;
-    background: #fff;
-    color: #333;
-    border: none;
-    outline: none;
+#sign-in-container, 
+#sign-up-container, 
+#todo-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Fix for Safari and other browsers that might not support certain features */
+@supports not (backdrop-filter: blur(10px)) {
+    #sign-in-container, 
+    #sign-up-container, 
+    #todo-container,
+    .row {
+        background: rgba(30, 41, 59, 0.9);
+    }
 }
