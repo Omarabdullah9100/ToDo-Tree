@@ -100,8 +100,8 @@ p a:hover {
 }
 
 h2 img {
-    width: 30px; /* Set the desired width for the checklist icon */
-    height: 30px; /* Set the desired height for the checklist icon */
+    width: 30px;
+    height: 30px;
     margin-left: 10px;
 }
 
@@ -233,16 +233,15 @@ button.delete-btn:hover, button.complete-btn:hover {
     width: 120px;
     height: 80px;
     background: rgba(255, 255, 255, 0.1);
-    -webkit-backdrop-filter: blur(5px); /* Standard property */
-    backdrop-filter: blur(5px); /* Safari and iOS fallback */
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
     animation: float 10s infinite alternate ease-in-out;
-    opacity: 0.5; /* Consistent opacity for all floating cards */
-    transition: all 0.3s ease-in-out; /* Smooth transitions */
+    opacity: 0.5;
+    transition: all 0.3s ease-in-out;
 }
 
-/* Floating Animations */
 @keyframes float {
     0% {
         transform: translateY(0px) rotate(0deg);
@@ -273,9 +272,7 @@ button.delete-btn:hover, button.complete-btn:hover {
     }
 }
 
-/* Other styles remain the same */
-
-/* Style for the reminder datetime input */
+/* Reminder Input Style */
 #reminder-select {
     padding: 10px;
     border-radius: 5px;

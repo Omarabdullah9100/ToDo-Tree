@@ -1,59 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do Tree</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="Images/favicon.png">
-
-    <!-- Firebase CDN -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-messaging.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do App with Firebase</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <!-- Sign-In Form -->
+  <div class="container">
+    <!-- Authentication Forms (Sign In / Sign Up) -->
     <div id="auth-container">
-        <div id="sign-in-container">
-            <h2>Sign In</h2>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button id="sign-in-button">Sign In</button>
-            <p>Don't have an account? <a href="#" id="sign-up-link">Sign Up</a></p>
-        </div>
+      <div id="sign-up-container">
+        <h2>Sign Up</h2>
+        <input type="email" id="sign-up-email" placeholder="Enter your email">
+        <input type="password" id="sign-up-password" placeholder="Enter your password">
+        <button onclick="signUp()">Sign Up</button>
+        <p>Already have an account? <a href="#" id="toggle-sign-in">Sign In</a></p>
+      </div>
 
-        <!-- Sign-Up Form -->
-        <div id="sign-up-container" style="display: none;">
-            <h2>Sign Up</h2>
-            <input type="email" id="new-email" placeholder="Email" required>
-            <input type="password" id="new-password" placeholder="Password" required>
-            <button id="sign-up-button">Sign Up</button>
-            <p>Already have an account? <a href="#" id="sign-in-link">Sign In</a></p>
-        </div>
+      <div id="sign-in-container" style="display: none;">
+        <h2>Sign In</h2>
+        <input type="email" id="sign-in-email" placeholder="Enter your email">
+        <input type="password" id="sign-in-password" placeholder="Enter your password">
+        <button onclick="signIn()">Sign In</button>
+        <p>Don't have an account? <a href="#" id="toggle-sign-up">Sign Up</a></p>
+      </div>
+
+      <button id="logout-button" style="display: none;" onclick="logout()">Log Out</button>
     </div>
 
-    <!-- Main To-Do List (Visible After Sign-In) -->
-    <div class="container" id="todo-container" style="display: none;">
-        <button id="logout-button">Logout</button>
-        <h2>To-Do List <img src="Images/checklist_icon.png" alt="Checklist Icon"></h2>
-        <div class="row">
-            <input type="text" id="input-box" placeholder="Add your task">
-            <select id="category-select">
-                <option value="Work">Work</option>
-                <option value="Personal">Personal</option>
-                <option value="Urgent">Urgent</option>
-                <option value="Others">Others</option>
-            </select>
-            <input type="datetime-local" id="reminder-select">
-            <button onclick="addTask()">Add</button>
-        </div>
-        <ul id="list-container"></ul>
-    </div>
+    <!-- Main To-Do List -->
+    <div id="todo-container" style="display: none;">
+      <h2>To-Do List <img src="checklist-icon.png" alt="Checklist Icon"></h2>
 
-    <!-- Firebase Initialization -->
-    <script src="app.js"></script>
+      <!-- Row for task input -->
+      <div class="row">
+        <input type="text" id="task-input" placeholder="Enter a new task...">
+        <button onclick="addTask()">Add Task</button>
+      </div>
+
+      <!-- Task List -->
+      <ul id="task-list"></ul>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js';
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js';
+    import { getMessaging, getToken } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-messaging.js';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDQUzseHoekIQihohpW-8XFy-fKvibbS8c",
+        authDomain: "todo-list-9dbcf.firebaseapp.com",
+        projectId: "todo-list-9dbcf",
+        storageBucket: "todo-list-9dbcf.appspot.com",
+        messagingSenderId: "503251074837",
+        appId: "1:503251074837:web:9ab8901930ba884953f31c"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const messaging = getMessaging(app);
+
+    // Sign up function
+    const signUp = async () => {
+      const email = document.getElementById("sign-up-email").value;
+      const password = document.getElementById("sign-up-password").value;
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        console.log('User signed up: ', userCredential.user);
+        document.getElementById("sign-up-container").style.display = "none";
+        document.getElementById("todo-container").style.display = "block";
+      } catch (error) {
+        console.error('Error during sign up: ', error);
+      }
+    };
+
+    // Sign in function
+    const signIn = async () => {
+      const email = document.getElementById("sign-in-email").value;
+      const password = document.getElementById("sign-in-password").value;
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log('User signed in: ', userCredential.user);
+        document.getElementById("sign-in-container").style.display = "none";
+        document.getElementById("todo-container").style.display = "block";
+      } catch (error) {
+        console.error('Error during sign in: ', error);
+      }
+    };
+
+    // Log out function
+    const logout = () => {
+      signOut(auth).then(() => {
+        console.log('User logged out');
+        document.getElementById("todo-container").style.display = "none";
+        document.getElementById("sign-up-container").style.display = "block";
+        document.getElementById("logout-button").style.display = "none";
+      }).catch((error) => {
+        console.error('Error logging out: ', error);
+      });
+    };
+
+    // Task Management
+    const addTask = async () => {
+      const taskInput = document.getElementById("task-input").value;
+      if (taskInput.trim() !== "") {
+        try {
+          const docRef = await addDoc(collection(db, "tasks"), {
+            task: taskInput,
+            completed: false,
+            userId: auth.currentUser.uid,
+            timestamp: new Date(),
+          });
+          console.log("Document written with ID: ", docRef.id);
+          document.getElementById("task-input").value = "";
+        } catch (error) {
+          console.error("Error adding document: ", error);
+        }
+      }
+    };
+
+    const deleteTask = (taskId) => {
+      const taskRef = doc(db, "tasks", taskId);
+      deleteDoc(taskRef)
+        .then(() => {
+          console.log("Task deleted");
+          loadTasks(); // Refresh task list
+        })
+        .catch((error) => {
+          console.error("Error deleting task: ", error);
+        });
+    };
+
+    // Load tasks from Firestore
+    const loadTasks = async () => {
+      const taskList = document.getElementById("task-list");
+      taskList.innerHTML = ''; // Clear existing tasks
+
+      const querySnapshot = await getDocs(collection(db, "tasks"));
+      querySnapshot.forEach((doc) => {
+        const task = doc.data();
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span>${task.task}</span>
+          <button onclick="deleteTask('${doc.id}')">Delete</button>
+        `;
+        taskList.appendChild(li);
+      });
+    };
+
+    // Toggle between Sign Up and Sign In forms
+    document.getElementById("toggle-sign-in").onclick = () => {
+      document.getElementById("sign-up-container").style.display = "none";
+      document.getElementById("sign-in-container").style.display = "block";
+    };
+    
+    document.getElementById("toggle-sign-up").onclick = () => {
+      document.getElementById("sign-in-container").style.display = "none";
+      document.getElementById("sign-up-container").style.display = "block";
+    };
+
+    // Request Notification Permission (FCM)
+    const requestNotificationPermission = async () => {
+      try {
+        const token = await getToken(messaging, { vapidKey: 'your-vapid-key' });
+        console.log('FCM Token: ', token);
+      } catch (error) {
+        console.error('Error getting FCM token: ', error);
+      }
+    };
+
+    // Initialize the app (Run once page is loaded)
+    window.onload = function() {
+      requestNotificationPermission();
+      loadTasks(); // Load tasks after sign in
+    };
+  </script>
 </body>
 </html>

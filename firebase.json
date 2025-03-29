@@ -1,12 +1,31 @@
 {
+    "firestore": {
+      "rules": "firestore.rules",
+      "indexes": [
+        {
+          "collectionGroup": "tasks",
+          "queryScope": "COLLECTION",
+          "fields": [
+            { "fieldPath": "userId", "order": "ASCENDING" },
+            { "fieldPath": "createdAt", "order": "ASCENDING" }
+          ]
+        }
+      ]
+    },
     "hosting": {
-      "public": "public", 
+      "public": "public",
       "rewrites": [
         {
           "source": "**",
           "destination": "/index.html"
         }
       ]
+    },
+    "functions": {
+      "source": "functions"
+    },
+    "storage": {
+      "rules": "storage.rules"
     }
   }
   
