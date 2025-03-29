@@ -23,21 +23,80 @@ body {
     height: 100vh;
 }
 
-/* To-Do App Styling */
-.todoapp {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-    -webkit-backdrop-filter: blur(10px); /* Standard property */
-    backdrop-filter: blur(10px); /* Safari and iOS fallback */
-    text-align: center;
-    color: #f5f5f5;
+/* Authentication Forms (Sign In / Sign Up) */
+#auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    width: 100%;
 }
 
-h2 {
+#sign-in-container, #sign-up-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: #f5f5f5;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#sign-in-container h2, #sign-up-container h2 {
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 20px;
+}
+
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background: transparent;
+    color: white;
+    border: none;
+    outline: none;
+}
+
+button {
+    background-color: #22d3ee;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #0ea5e9;
+}
+
+/* Styling for Sign-In and Sign-Up Links */
+p a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
+
+/* Main To-Do List Styling (Visible After Login) */
+#todo-container {
+    display: none;
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: white;
+    text-align: center;
 }
 
 h2 img {
@@ -57,7 +116,7 @@ h2 img {
     margin-bottom: 20px;
 }
 
-input {
+input[type="text"], select, #reminder-select {
     flex: 1;
     padding: 10px;
     border-radius: 5px;
@@ -68,14 +127,11 @@ input {
 }
 
 select {
-    padding: 10px;
-    border-radius: 5px;
     background: #fff;
     color: #333;
 }
 
 button {
-    padding: 10px;
     background: #22d3ee;
     color: white;
     border: none;
@@ -88,7 +144,7 @@ button:hover {
     background: #0ea5e9;
 }
 
-/* Styling for the Task List */
+/* Task List Styling */
 ul {
     list-style: none;
     padding: 0;
@@ -129,16 +185,37 @@ li:hover {
 }
 
 /* Button Styling */
-button {
-    background-color: #22d3ee;
-    color: white;
+button.delete-btn, button.complete-btn {
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+    background-color: #ff3d00;
+    color: white;
+    border: none;
 }
 
-button:hover {
-    background-color: #0ea5e9;
+button.complete-btn {
+    background-color: #4caf50;
+}
+
+button.delete-btn:hover, button.complete-btn:hover {
+    opacity: 0.8;
+}
+
+/* Logout Button */
+#logout-button {
+    padding: 10px;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-bottom: 20px;
+}
+
+#logout-button:hover {
+    background: #e53935;
 }
 
 /* Floating Task Cards */
