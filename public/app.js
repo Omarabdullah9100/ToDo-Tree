@@ -1,4 +1,9 @@
-// Firebase configuration
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-messaging.js";
+
+// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDQUzseHoekIQihohpW-8XFy-fKvibbS8c",
   authDomain: "todo-list-9dbcf.firebaseapp.com",
@@ -9,19 +14,18 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const firestore = firebase.firestore();
-const messaging = firebase.messaging(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const messaging = getMessaging(app);
 
-// Request permission for notifications
+// Request Notification Permissions
 async function requestPermission() {
   try {
     const permission = await Notification.requestPermission();
-
     if (permission === "granted") {
       console.log("Notification permission granted.");
-      // Get the FCM token and save it to Firestore
-      const token = await messaging.getToken({ vapidKey: "YOUR_VAPID_KEY" });
+      
+      const token = await getToken(messaging, { vapidKey: "BMBvWtE7-apHuAWHXK-z7SIhtM55DE4Zn0ZPCqLBciVXak1C-vgapNvgPxEbM9KyPUaLl3M4QflBIuEO7-O7_R8" });
 
       if (token) {
         console.log("FCM Token:", token);
@@ -35,94 +39,86 @@ async function requestPermission() {
   }
 }
 
-function saveTokenToFirestore(token) {
-  const userRef = firestore.collection("users").doc("USER_ID"); // Update with actual user ID
-
-  userRef.set({ fcmToken: token }, { merge: true })
-    .then(() => console.log("FCM Token saved to Firestore."))
-    .catch(error => console.error("Error saving token:", error));
+// Save FCM Token to Firestore
+async function saveTokenToFirestore(token) {
+  try {
+    await addDoc(collection(db, "users"), { fcmToken: token });
+    console.log("FCM Token saved to Firestore.");
+  } catch (error) {
+    console.error("Error saving token:", error);
+  }
 }
 
-// Push notification handling
-messaging.onMessage((payload) => {
+// Listen for incoming messages
+onMessage(messaging, (payload) => {
   console.log("Message received:", payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.icon
-  };
+  const { title, body, icon } = payload.notification;
 
   if (Notification.permission === "granted") {
-    new Notification(notificationTitle, notificationOptions);
+    new Notification(title, { body, icon });
   }
 });
 
-// Background message handling
-messaging.onBackgroundMessage((payload) => {
-  console.log("Background message received:", payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.icon
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
-
-// Add Task function
-function addTask() {
+// Add Task
+async function addTask() {
   const taskInput = document.getElementById("input-box").value;
   const categorySelect = document.getElementById("category-select").value;
   const reminderDate = document.getElementById("reminder-select").value;
 
   if (taskInput) {
-    const tasksRef = firestore.collection("tasks");
+    try {
+      await addDoc(collection(db, "tasks"), {
+        name: taskInput,
+        category: categorySelect,
+        reminder: reminderDate,
+        timestamp: serverTimestamp()
+      });
 
-    tasksRef.add({
-      name: taskInput,
-      category: categorySelect,
-      reminder: reminderDate,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      deviceToken: "USER_DEVICE_TOKEN" // Replace with actual device token from Firestore
-    }).then(() => {
       console.log("Task added to Firestore.");
       displayTasks(); // Refresh task list
-    }).catch(error => {
+    } catch (error) {
       console.error("Error adding task:", error);
-    });
+    }
 
     // Clear input fields
-    document.getElementById("input-box").value = '';
-    document.getElementById("category-select").value = 'Work';
-    document.getElementById("reminder-select").value = '';
+    document.getElementById("input-box").value = "";
+    document.getElementById("category-select").value = "Work";
+    document.getElementById("reminder-select").value = "";
   }
 }
 
-// Delete Task function
-function deleteTask(taskId) {
-  const taskRef = firestore.collection("tasks").doc(taskId);
-  taskRef.delete()
-    .then(() => console.log("Task deleted"))
-    .catch(error => console.error("Error deleting task:", error));
+// Delete Task
+async function deleteTask(taskId) {
+  try {
+    await deleteDoc(doc(db, "tasks", taskId));
+    console.log("Task deleted.");
+    displayTasks();
+  } catch (error) {
+    console.error("Error deleting task:", error);
+  }
 }
 
-// Mark Task as Complete function
-function completeTask(taskId) {
-  const taskRef = firestore.collection("tasks").doc(taskId);
-  taskRef.update({ completed: true })
-    .then(() => console.log("Task marked as complete"))
-    .catch(error => console.error("Error completing task:", error));
+// Mark Task as Complete
+async function completeTask(taskId) {
+  try {
+    await updateDoc(doc(db, "tasks", taskId), { completed: true });
+    console.log("Task marked as complete.");
+    displayTasks();
+  } catch (error) {
+    console.error("Error completing task:", error);
+  }
 }
 
-// Display tasks from Firestore
-function displayTasks() {
+// Display Tasks
+async function displayTasks() {
   const listContainer = document.getElementById("list-container");
-  listContainer.innerHTML = ''; // Clear previous tasks
+  listContainer.innerHTML = ""; // Clear previous tasks
 
-  const tasksRef = firestore.collection("tasks").orderBy("timestamp", "desc");
-  tasksRef.get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      const task = doc.data();
+  try {
+    const querySnapshot = await getDocs(collection(db, "tasks"));
+
+    querySnapshot.forEach((docSnap) => {
+      const task = docSnap.data();
       const li = document.createElement("li");
 
       li.innerHTML = `
@@ -134,27 +130,33 @@ function displayTasks() {
       `;
 
       li.querySelector(".delete-btn").addEventListener("click", () => {
-        deleteTask(doc.id);
-        li.remove();
+        deleteTask(docSnap.id);
       });
 
       li.querySelector(".complete-btn").addEventListener("click", () => {
-        completeTask(doc.id);
-        li.classList.add("checked"); // Visual indication of completion
+        completeTask(docSnap.id);
+        li.classList.add("checked"); // Visual indication
       });
 
       listContainer.appendChild(li);
     });
-  }).catch(error => {
+  } catch (error) {
     console.error("Error fetching tasks:", error);
-  });
+  }
 }
 
-// Call displayTasks to load tasks on page load
-window.onload = displayTasks;
+// Register Service Worker for Push Notifications
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/firebase-messaging-sw.js")
+    .then((registration) => console.log("Service Worker registered:", registration))
+    .catch((error) => console.error("Service Worker registration failed:", error));
+}
+
+// Load tasks on page load
+window.onload = () => {
+  displayTasks();
+  requestPermission();
+};
 
 // Event listener for "Add" button
 document.querySelector("button").addEventListener("click", addTask);
-
-// Request permission to send notifications when the app is loaded
-requestPermission();
