@@ -6,7 +6,7 @@
     <title>To-Do Tree</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="Images/favicon.png">
-    
+
     <!-- Firebase CDN -->
     <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js"></script>
@@ -22,20 +22,38 @@
         <div class="todoapp">
             <h2>To-Do List <img src="Images/checklist_icon.png" alt="Checklist Icon"></h2>
             <div class="row">
-                <input type="text" id="input-box" placeholder="Add your task">
-                <select id="category-select">
+                <input type="text" id="input-box" placeholder="Add your task" aria-label="Task input">
+                <select id="category-select" aria-label="Task category">
                     <option value="Work">Work</option>
                     <option value="Personal">Personal</option>
                     <option value="Urgent">Urgent</option>
                     <option value="Others">Others</option>
                 </select>
-                <input type="datetime-local" id="reminder-select">
+                <input type="datetime-local" id="reminder-select" aria-label="Task reminder">
                 <button onclick="addTask()">Add</button>
             </div>
             <ul id="list-container"></ul>
         </div>
     </div>
 
+    <!-- Firebase Initialization -->
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",  
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        // Initialize Firebase App
+        const app = firebase.initializeApp(firebaseConfig);
+        const firestore = firebase.firestore(app);
+    </script>
+
+    <!-- Main App Script -->
     <script src="app.js"></script>
 </body>
 </html>
