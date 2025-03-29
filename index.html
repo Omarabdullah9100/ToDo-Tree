@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do Tree</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="Images/favicon.png">
+    
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js"></script>
+</head>
+
+<body>
+    <!-- Floating Task Cards -->
+    <div class="floating-task-container"></div>
+
+    <!-- Main To-Do List -->
+    <div class="container">
+        <div class="todoapp">
+            <h2>To-Do List <img src="Images/checklist_icon.png" alt="Checklist Icon"></h2>
+            <div class="row">
+                <input type="text" id="input-box" placeholder="Add your task">
+                <select id="category-select">
+                    <option value="Work">Work</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Urgent">Urgent</option>
+                    <option value="Others">Others</option>
+                </select>
+                <input type="datetime-local" id="reminder-select">
+                <button onclick="addTask()">Add</button>
+            </div>
+            <ul id="list-container"></ul>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
