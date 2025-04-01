@@ -1,35 +1,77 @@
-/* eslint-disable max-len */
+// Filename: functions/index.js (Firebase Cloud Functions)
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-
 admin.initializeApp();
 
-exports.sendPushNotification = functions.firestore
-    .document("tasks/{taskId}") // Triggered when a task document is created or updated
-    .onWrite(async (change, context) => {
-      const taskData = change.after.data(); // Get task data
-      const userId = taskData.userId;
+exports.scheduleReminders = functions.https.onRequest(async (req, res) => {
+  // CORS headers
+  res.set("Access-Control-Allow-Origin", "*");
 
-      // Check if there is an update in the task
-      if (!taskData || !userId) return;
+  if (req.method === "OPTIONS") {
+    res.set("Access-Control-Allow-Methods", "POST");
+    res.set("Access-Control-Allow-Headers", "Content-Type");
+    res.status(204).send("");
+    return;
+  }
 
-      const userSnapshot = await admin.firestore().collection("users").doc(userId).get();
-      const userToken = userSnapshot.data().deviceToken;
+  // Handle the actual request
+  try {
+    const {userId, token, tasks} = req.body;
 
-      if (!userToken) return; // Exit if no device token
+    if (!userId || !token || !tasks || !Array.isArray(tasks)) {
+      return res.status(400).json({error: "Invalid request parameters"});
+    }
 
-      const message = {
-        notification: {
-          title: "New Task Added",
-          body: `Task: ${taskData.task}`,
-        },
-        token: userToken,
-      };
+    const scheduledTasks = [];
 
-      try {
-        await admin.messaging().send(message);
-        console.log("Notification sent successfully!");
-      } catch (error) {
-        console.error("Error sending notification: ", error);
-      }
+    // Schedule each task reminder
+    for (const task of tasks) {
+      if (!task.reminder) continue;
+
+      const reminderDate = new Date(task.reminder);
+      const now = new Date();
+
+      // Skip past reminders
+      if (reminderDate <= now) continue;
+
+      // Schedule the reminder
+      const delay = reminderDate.getTime() - now.getTime();
+
+      // Use Firebase Cloud Messaging to send push notification
+      setTimeout(async () => {
+        try {
+          await admin.messaging().send({
+            token: token,
+            notification: {
+              title: "Task Reminder",
+              body: task.name,
+            },
+            data: {
+              taskId: task.id,
+              url: "/?taskId=" + task.id,
+            },
+          });
+
+          console.log(`Reminder sent for task: ${task.name}`);
+        } catch (error) {
+          console.error("Error sending reminder:", error);
+        }
+      }, delay);
+
+      scheduledTasks.push({
+        id: task.id,
+        name: task.name,
+        scheduledFor: reminderDate.toISOString(),
+      });
+    }
+
+    return res.status(200).json({
+      message: "Reminders scheduled successfully",
+      count: scheduledTasks.length,
+      tasks: scheduledTasks,
     });
+  } catch (error) {
+    console.error("Error scheduling reminders:", error);
+    return res.status(500).json({error: "Internal server error"});
+  }
+});

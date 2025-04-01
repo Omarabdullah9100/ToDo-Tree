@@ -1,31 +1,50 @@
 {
-    "firestore": {
-      "rules": "firestore.rules",
-      "indexes": [
-        {
-          "collectionGroup": "tasks",
-          "queryScope": "COLLECTION",
-          "fields": [
-            { "fieldPath": "userId", "order": "ASCENDING" },
-            { "fieldPath": "createdAt", "order": "ASCENDING" }
-          ]
-        }
-      ]
-    },
-    "hosting": {
-      "public": "public",
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    "functions": {
-      "source": "functions"
-    },
-    "storage": {
-      "rules": "storage.rules"
-    }
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": [
+      {
+        "collectionGroup": "tasks",
+        "queryScope": "COLLECTION",
+        "fields": [
+          { "fieldPath": "userId", "order": "ASCENDING" },
+          { "fieldPath": "createdAt", "order": "ASCENDING" }
+        ]
+      }
+    ]
+  },
+  "hosting": {
+    "public": "public",
+    "headers": [
+      {
+        "source": "/Images/favicon.png",
+        "headers": [
+          { "key": "Content-Type", "value": "image/png" }
+        ]
+      },
+      {
+        "source": "**/*.js",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "source": "**/*.css",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "functions": {
+    "source": "functions"
+  },
+  "storage": {
+    "rules": "storage.rules"
   }
-  
+}

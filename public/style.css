@@ -140,8 +140,8 @@ input:checked + .slider .moon-icon {
     background: var(--card-bg);
     padding: 20px;
     border-radius: 8px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Safari and iOS fallback */
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); /* Safari and iOS fallback */
     color: var(--text-color);
     width: 90%;
     max-width: 350px;
@@ -212,8 +212,8 @@ p a:hover {
     padding: 20px;
     background: var(--card-bg);
     border-radius: 10px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Safari and iOS fallback */
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); /* Safari and iOS fallback */
     color: var(--text-color);
     text-align: center;
     overflow-y: auto;
@@ -266,8 +266,8 @@ h2 img {
     padding: 15px;
     margin-bottom: 20px;
     width: 100%;
-    backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
     transition: all 0.3s ease;
     flex-wrap: wrap;
 }
@@ -665,3 +665,17 @@ li.checked {
         font-size: 16px;
     }
 }
+
+/* Add this to style.css to highlight the task when notification is clicked */
+li.highlighted {
+    animation: highlight 2s ease-in-out;
+  }
+  
+  @keyframes highlight {
+    0%, 100% {
+      background-color: inherit;
+    }
+    50% {
+      background-color: rgba(255, 215, 0, 0.3);
+    }
+  }

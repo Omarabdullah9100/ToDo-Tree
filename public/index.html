@@ -74,5 +74,53 @@
 
     <!-- Link to JavaScript file -->
     <script src="app.js"></script>
+
+    <!-- Add this right before the closing </body> tag -->
+<script>
+    // Register service worker for push notifications
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+    
+    // Check for taskId in URL parameters (for when notification is clicked)
+    window.addEventListener('load', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const taskId = urlParams.get('taskId');
+      
+      if (taskId) {
+        // Wait for auth state to be ready
+        const checkAuth = setInterval(() => {
+          const user = firebase.auth().currentUser;
+          if (user) {
+            clearInterval(checkAuth);
+            highlightTask(taskId);
+          }
+        }, 1000);
+      }
+    });
+    
+    // Function to highlight a specific task
+    function highlightTask(taskId) {
+      const user = firebase.auth().currentUser;
+      if (!user) return;
+      
+      setTimeout(() => {
+        const taskElement = document.querySelector(`li[data-task-id="${taskId}"]`);
+        if (taskElement) {
+          taskElement.classList.add('highlighted');
+          taskElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000); // Give time for tasks to load
+    }
+  </script>
+
 </body>
 </html>
