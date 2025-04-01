@@ -122,5 +122,20 @@
     }
   </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if ('Notification' in window && 'serviceWorker' in navigator) {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    console.log("Notification permission granted.");
+                } else {
+                    console.log("Notification permission denied.");
+                }
+            });
+        }
+    });
+    </script>
+    
+
 </body>
 </html>
